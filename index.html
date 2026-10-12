@@ -815,8 +815,8 @@
           <div class="sol-desc">Sorting and reprocessing plastic bottles, sacks and nylon waste at scale, one tonne every hour.</div>
         </div>
         <div class="sol-video-thumb">
-          <video autoplay muted loop playsinline preload="auto">
-            <source src="assets/video/sol-pet-recycling.mp4" type="video/mp4">
+          <video class="lazy-video" muted loop playsinline preload="none">
+            <source data-src="assets/video/sol-pet-recycling.mp4" type="video/mp4">
           </video>
         </div>
       </a>
@@ -827,8 +827,8 @@
           <div class="sol-desc">Producing egg crates from recovered pulp, twelve bundles every hour.</div>
         </div>
         <div class="sol-video-thumb">
-          <video autoplay muted loop playsinline preload="auto">
-            <source src="assets/video/sol-egg-crate.mp4" type="video/mp4">
+          <video class="lazy-video" muted loop playsinline preload="none">
+            <source data-src="assets/video/sol-egg-crate.mp4" type="video/mp4">
           </video>
         </div>
       </a>
@@ -839,8 +839,8 @@
           <div class="sol-desc">Converting organic by-products into manure that restores farmland.</div>
         </div>
         <div class="sol-video-thumb">
-          <video autoplay muted loop playsinline preload="auto">
-            <source src="assets/video/sol-organic-manure.mp4" type="video/mp4">
+          <video class="lazy-video" muted loop playsinline preload="none">
+            <source data-src="assets/video/sol-organic-manure.mp4" type="video/mp4">
           </video>
         </div>
       </a>
@@ -851,8 +851,8 @@
           <div class="sol-desc">Recovered cotton reworked into pillows, cushions and teddy bears.</div>
         </div>
         <div class="sol-video-thumb">
-          <video autoplay muted loop playsinline preload="auto">
-            <source src="assets/video/sol-cotton-recycling.mp4" type="video/mp4">
+          <video class="lazy-video" muted loop playsinline preload="none">
+            <source data-src="assets/video/sol-cotton-recycling.mp4" type="video/mp4">
           </video>
         </div>
       </a>
@@ -868,8 +868,8 @@
           <div class="sol-desc">Collecting and compressing cartons for re-entry into the paper supply chain.</div>
         </div>
         <div class="sol-video-thumb">
-          <video autoplay muted loop playsinline preload="auto">
-            <source src="assets/video/sol-carton-recycling.mp4" type="video/mp4">
+          <video class="lazy-video" muted loop playsinline preload="none">
+            <source data-src="assets/video/sol-carton-recycling.mp4" type="video/mp4">
           </video>
         </div>
       </a>
@@ -1216,6 +1216,27 @@
         btn.style.transform = 'translate(0,0)';
       });
     });
+  })();
+
+  /* Lazy-load below-the-fold solution videos */
+  (function(){
+    const lazyVideos = document.querySelectorAll('video.lazy-video');
+    if (!lazyVideos.length) return;
+    const io = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const video = entry.target;
+        const source = video.querySelector('source[data-src]');
+        if (source) {
+          source.src = source.dataset.src;
+          source.removeAttribute('data-src');
+          video.load();
+          video.play().catch(() => {});
+        }
+        observer.unobserve(video);
+      });
+    }, { rootMargin: '400px 0px', threshold: 0.01 });
+    lazyVideos.forEach(v => io.observe(v));
   })();
 
   /* Floating hero particles */
